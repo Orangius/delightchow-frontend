@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS "payment" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"user_id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(256) NOT NULL,
+	"surname" varchar(256) NOT NULL,
+	"lastname" varchar(256) NOT NULL,
 	"email" varchar(100) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	"phone" varchar(15),

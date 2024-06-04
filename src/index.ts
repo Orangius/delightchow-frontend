@@ -1,36 +1,36 @@
-import express from "express"
-import bodyParser from "body-parser"
+import express from "express";
+import bodyParser from "body-parser";
+import userRoutes from "@/routes/users.js";
 
-const app = express()
+const app = express();
 
 //body parser middleware to parse request body
 // this parses the json type
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/api", userRoutes);
 
-app.get("/", (req, res)=>{
-    res.send("Hello world")
-    
-})
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
 
-app.post("/users", (req, res)=>{
- console.log(req.body)
- res.status(200).send({msg:"Gotten"})
-})
+app.post("/users", (req, res) => {
+  console.log(req.body);
+  res.status(200).send({ msg: "Gotten" });
+});
 
-app.get("/users/:id", (req, res)=>{
-    console.log(req.query)
-    console.log(req.params)
-})
+app.get("/users/:id", (req, res) => {
+  console.log(req.query);
+  console.log(req.params);
+});
 
-app.listen(4000, ()=>{
-    console.log("Listening on port 4000")
-})
+app.listen(4000, () => {
+  console.log("Listening on port 4000");
+});
 
 // import { db } from "@/db/db.js";
 // import { users } from "@/db/schema.js";
-
 
 // async function insert(){
 //     try{

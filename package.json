@@ -18,6 +18,7 @@
     "body-parser": "^1.20.2",
     "drizzle-orm": "^0.31.0",
     "express": "^4.17.21",
+    "express-validator": "^7.1.0",
     "postgres": "^3.4.4"
   },
   "devDependencies": {
