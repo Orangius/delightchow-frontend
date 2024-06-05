@@ -1,8 +1,12 @@
-import { Router, response } from "express";
+import { Router, Request, Response } from "express";
 import { db } from "@/db/db.js";
 import { users } from "@/db/schema.js";
 import { eq } from "drizzle-orm";
 import { body, validationResult } from "express-validator";
+import {
+  validateNewUser,
+  validatePatchRequest,
+} from "@/middlewares/user_validation.js";
 
 const router = Router();
 
@@ -34,94 +38,126 @@ router.get("/users/:id", async (request, response) => {
 });
 
 // validation of user post request before it is stored in the database
-const validateNewUser = () => {
-  return [
-    body("surname")
-      .isString()
-      .withMessage("Name must be a string")
-      .notEmpty()
-      .withMessage("Name must not be empty")
-      .trim(),
-    body("lastname")
-      .isString()
-      .withMessage("Name must be a string")
-      .notEmpty()
-      .withMessage("Name must not be empty")
-      .trim(),
-    body("email", "Field must be an email").trim().isEmail(),
-    body("password")
-      .isLength({ min: 6, max: 50 })
-      .withMessage("Password must be 6-50 characters"),
-    body("phone")
-      .isString()
-      .notEmpty()
-      .withMessage("Phone number cannot be empty")
-      .trim(),
-    body("address")
-      .isString()
-      .notEmpty()
-      .withMessage("Address cannot be empty"),
-  ];
-};
 
 // post request for creating a new user
-router.post("/users", validateNewUser(), async (request, response) => {
-  const { body } = request;
-  const result = validationResult(request);
-  if (!result.isEmpty()) {
-    return response.status(400).send({ errors: result.array() });
-  }
+router.post(
+  "/users",
+  validateNewUser,
+  async (request: Request, response: Response) => {
+    const { body } = request;
+    const result = validationResult(request);
+    if (!result.isEmpty()) {
+      return response.status(400).send({ errors: result.array() });
+    }
 
-  try {
-    await db.insert(users).values({
-      surname: body.surname,
-      lastname: body.lastname,
-      password: body.password,
-      address: body.address,
-      email: body.email,
-      phone: body.phone,
-    });
-  } catch (err) {
-    switch (err.code) {
-      case "23505":
-        return response.status(409).send({ msg: "email already exists" });
-        break;
+    try {
+      const res = await db
+        .insert(users)
+        .values({
+          surname: body.surname,
+          lastname: body.lastname,
+          password: body.password,
+          address: body.address,
+          email: body.email,
+          phone: body.phone,
+        })
+        .returning({ insertedId: users.user_id });
+
+      response.status(200).send(res);
+    } catch (err: any) {
+      switch (err.code) {
+        case "23505":
+          return response.status(409).send({ msg: "email already exists" });
+          break;
+      }
     }
   }
+);
 
-  response.sendStatus(200);
-});
+// update the entire user data
+router.put(
+  "/users/:id",
+  validateNewUser,
+  async (request: Request, response: Response) => {
+    const {
+      body,
+      params: { id },
+    } = request;
+    const result = validationResult(request);
+    if (!result.isEmpty()) {
+      return response.status(400).send({ error: result.array() });
+    }
 
-router.put("/users/:id", validateNewUser(), async (request, response) => {
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId))
+      return response.status(400).send({ message: "Invalid user ID" });
+    try {
+      await db
+        .update(users)
+        .set({
+          surname: body.surname,
+          lastname: body.lastname,
+          password: body.password,
+          phone: body.phone,
+          address: body.address,
+          email: body.email,
+        })
+        .where(eq(users.user_id, parsedId));
+      response.status(200).send({ msg: "Successful" });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+// patch a user data
+router.patch(
+  "/users/:id",
+  validatePatchRequest,
+  async (request: Request, response: Response) => {
+    const {
+      body,
+      params: { id },
+    } = request;
+    console.log(body, id);
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId))
+      return response.status(400).send({ message: "Invalid user ID" });
+
+    try {
+      await db
+        .update(users)
+        .set({
+          ...body,
+        })
+        .where(eq(users.user_id, parsedId));
+      response.status(200).send({ msg: "Successful" });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+// delete a user
+router.delete("/users/:id", async (request, response) => {
   const {
-    body,
     params: { id },
   } = request;
-  const result = validationResult(request);
-  if (!result.isEmpty()) {
-    return response.status(400).send({ error: result.array() });
-  }
-
   const parsedId = parseInt(id);
   if (isNaN(parsedId))
     return response.status(400).send({ message: "Invalid user ID" });
+
   try {
-    await db
-      .update(users)
-      .set({
-        surname: body.surname,
-        lastname: body.lastname,
-        password: body.password,
-        phone: body.phone,
-        address: body.address,
-        email: body.email,
-      })
-      .where(eq(users.user_id, parsedId));
-    response.status(200).send({ msg: "Successful" });
+    const res = await db
+      .delete(users)
+      .where(eq(users.user_id, parsedId))
+      .returning({ deletedId: users.user_id });
+    console.log("res is : ", res);
+    if (res[0]) response.status(200).send({ msg: "Successful" });
+    else response.status(404).send({ msg: "User not found" });
   } catch (err) {
     console.log(err);
   }
 });
 
-router.patch("/users", (request, response) => {});
 export default router;
