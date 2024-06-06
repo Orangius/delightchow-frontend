@@ -3,6 +3,7 @@ import { db } from "@/db/db.js";
 import { users } from "@/db/schema.js";
 import { eq } from "drizzle-orm";
 import { body, validationResult } from "express-validator";
+import bcryptjs from "bcryptjs";
 import {
   validateNewUser,
   validatePatchRequest,
@@ -49,21 +50,22 @@ router.post(
     if (!result.isEmpty()) {
       return response.status(400).send({ errors: result.array() });
     }
-
+    const passwordSalt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(body.password, passwordSalt);
     try {
       const res = await db
         .insert(users)
         .values({
           surname: body.surname,
           lastname: body.lastname,
-          password: body.password,
+          password: hashedPassword,
           address: body.address,
           email: body.email,
           phone: body.phone,
         })
         .returning({ insertedId: users.user_id });
 
-      response.status(200).send(res);
+      response.status(201).send(res);
     } catch (err: any) {
       switch (err.code) {
         case "23505":
