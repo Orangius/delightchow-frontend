@@ -1,3 +1,4 @@
+import { urlRoot } from "@/lib/constants";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -17,9 +18,7 @@ const MealPage = () => {
 
   useEffect(() => {
     async function fetchMeals() {
-      const result = await fetch(
-        `http://localhost:4000/api/admin/products/${mealId.id}`
-      );
+      const result = await fetch(`${urlRoot}/api/admin/products/${mealId.id}`);
       const meals = await result.json();
       setMeals(meals);
       setisLoading(false);
@@ -31,13 +30,19 @@ const MealPage = () => {
   console.log(meal);
 
   return (
-    <div>
-      <h1>{meal?.name}</h1>
-      <h2>{meal?.category}</h2>
-      <h2>{meal?.price}</h2>
-      <h2>{meal?.description}</h2>
-      <button> Edit meal</button>
-    </div>
+    <>
+      {!isLoading ? (
+        <div>
+          <h1>{meal?.name}</h1>
+          <h2>{meal?.category}</h2>
+          <h2>{meal?.price}</h2>
+          <h2>{meal?.description}</h2>
+          <button> Edit meal</button>
+        </div>
+      ) : (
+        <h2>Loading</h2>
+      )}
+    </>
   );
 };
 
