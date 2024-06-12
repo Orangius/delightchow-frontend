@@ -43,6 +43,8 @@ export function EditMeal() {
       category: "",
     },
   });
+
+  function onSubmit() {}
   // ...
 
   return (
@@ -53,7 +55,7 @@ export function EditMeal() {
       >
         <FormField
           control={editMealForm.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
@@ -72,6 +74,8 @@ export function EditMeal() {
     </Form>
   );
 }
+
+export default EditMeal;
 
 // interface Meal {
 //   food_id: number;
