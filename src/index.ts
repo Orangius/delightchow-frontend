@@ -5,8 +5,10 @@ import session from "express-session";
 import "dotenv/config";
 import "@/strategies/local-strategy.js";
 import passport, { Passport } from "passport";
+import cors from "cors";
 
 import productRouter from "./routes/admin/products.js";
+import orderRoutes from "./routes/admin/orders.js";
 
 const app = express();
 
@@ -23,7 +25,12 @@ const sessionMiddleware = session({
     httpOnly: true,
   },
 });
+const corsOptions = {
+  origin: "http://localhost:5173", //(https://your-client-app.com)
+  optionsSuccessStatus: 200,
+};
 
+app.use(cors(corsOptions));
 app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -35,6 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // ......................Routes registration...................................
 app.use("/api", userRoutes);
 app.use("/api/admin", productRouter);
+app.use("/api/admin", orderRoutes);
 
 // app.post("/api/auth/login", (req, res, next) => {
 //   passport.authenticate(

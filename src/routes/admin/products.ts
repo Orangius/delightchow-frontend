@@ -28,7 +28,7 @@ productRouter.get(
   "/products/:id",
   async (request: Request, response: Response) => {
     const parsedId = parseInt(request.params.id);
-    if (isNaN(parsedId)) response.status(400).send("Invalid ID");
+    if (isNaN(parsedId)) return response.status(400).send("Invalid ID");
     try {
       const data = await db
         .select()
