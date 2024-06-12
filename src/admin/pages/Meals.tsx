@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -27,22 +28,24 @@ const Meals = () => {
     <div>
       {!isLoading ? (
         <>
-          <div className=" bg-card text-card-foreground my-5 mx-4  flex justify-between items-center min-h-20 border border-border rounded">
+          <div className="bg-card text-card-foreground mx-4 my-4 grid grid-cols-4 text-left font-bold border-b">
             <h2>Name</h2>
             <h2>Price</h2>
             <p>Description</p>
+            <h2></h2>
           </div>
 
           <ul>
             {meals.map((item: Meal) => (
               <li key={item.food_id}>
-                <Link to={`${"products/"}${item.food_id}`}>
-                  <div className=" bg-card text-card-foreground my-5 mx-4  flex justify-between items-center min-h-20 border border-border rounded">
-                    <h2>{item.name}</h2>
-                    <h2>{item.price}</h2>
-                    <p>{item.category}</p>
-                  </div>
-                </Link>
+                <div className="bg-card text-card-foreground mx-4 h-12 grid grid-cols-4 mb-4 text-left border-b">
+                  <p>{item.name}</p>
+                  <p>{`N${item.price}`}</p>
+                  <p>{item.category}</p>
+                  <Button className="w-20 bg-primary">
+                    <Link to={`${"products/"}${item.food_id}`}>Edit</Link>
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

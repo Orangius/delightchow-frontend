@@ -4,7 +4,7 @@ const DashboardLayout = () => {
   return (
     <div className="flex gap-8 h-screen">
       <nav>
-        <ul className="bg-card text-card-foreground min-w-40 flex-1 flex flex-col items-center py-4 gap-5 font-bold text-lg h-screen border border-border rounded">
+        <ul className="bg-card text-card-foreground min-w-40 flex-1 flex flex-col items-center py-4 gap-5 font-bold text-lg h-screen border border-border rounded text-left">
           <li>
             <Link to={"."}> Meals</Link>
           </li>
@@ -19,6 +19,7 @@ const DashboardLayout = () => {
           </li>
         </ul>
       </nav>
+
       <div className="bg-card text-card-foreground flex-1 border border-border rounded">
         <Outlet />
       </div>
