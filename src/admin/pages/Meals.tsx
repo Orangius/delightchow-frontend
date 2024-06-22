@@ -1,23 +1,36 @@
 import { Button } from "@/components/ui/button";
+import { urlRoot } from "@/lib/constants";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Meal {
   food_id: number;
   name: string;
   price: number;
   category: string;
+  imageURL: string;
 }
 
 const Meals = () => {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [isLoading, setisLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchMeals() {
-      const result = await fetch("http://localhost:4000/api/admin/products");
-      const meals = await result.json();
-      setMeals(meals);
-      setisLoading(false);
+      const result = await fetch(`${urlRoot}/api/admin/products`, {
+        credentials: "include",
+      });
+      if (result.status === 401) {
+        console.log(result);
+        return navigate("/api/admin/login");
+      }
+
+      if (result.ok) {
+        const meals = await result.json();
+        console.log(meals);
+        setMeals(meals);
+        setisLoading(false);
+      }
     }
 
     fetchMeals();
@@ -25,24 +38,32 @@ const Meals = () => {
 
   console.log(meals);
   return (
-    <div>
+    <div className="mt-10">
       {!isLoading ? (
         <>
-          <div className="bg-card text-card-foreground mx-4 my-4 grid grid-cols-4 text-left font-bold border-b">
+          <div className="bg-card text-card-foreground mx-4 my-4 grid grid-cols-5 text-left font-bold border-b static">
+            <h2></h2>
             <h2>Name</h2>
             <h2>Price</h2>
             <p>Description</p>
-            <h2></h2>
+            <Button className="bg-primary w-32 absolute text-xl top-[20px] right-5 cursor-pointer">
+              <Link to={"add-meal"}>+ New</Link>
+            </Button>
           </div>
 
           <ul>
             {meals.map((item: Meal) => (
               <li key={item.food_id}>
-                <div className="bg-card text-card-foreground mx-4 h-12 grid grid-cols-4 mb-4 text-left border-b">
+                <div className="bg-card text-card-foreground mx-4 h-12 grid grid-cols-5 my-4 pb-16 text-left border-b place-items-center justify-items-start">
+                  <img
+                    className="inline-block size-[46px] rounded-full"
+                    src={item.imageURL}
+                    alt="Logo"
+                  />
                   <p>{item.name}</p>
                   <p>{`N${item.price}`}</p>
                   <p>{item.category}</p>
-                  <Button className="w-20 bg-primary">
+                  <Button className="w-20 bg-secondary">
                     <Link to={`${"products/"}${item.food_id}`}>Edit</Link>
                   </Button>
                 </div>

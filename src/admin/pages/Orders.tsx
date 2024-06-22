@@ -1,11 +1,7 @@
 import { urlRoot } from "@/lib/constants";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { Toaster } from "@/components/ui/toaster";
-
-import { useToast } from "@/components/ui/use-toast";
-import OrderStatusSelect from "../components/OrderStatusSelect";
+import { Link, useNavigate } from "react-router-dom";
 
 interface OrderInterface {
   order_id: string;
@@ -16,16 +12,22 @@ interface OrderInterface {
 const Orders = () => {
   const [orders, setOrders] = useState<OrderInterface[]>();
   const [isLoading, setIsloading] = useState(true);
-
+  const navigate = useNavigate();
   // const [UpdatedStatus, setUpdatedStatus] = useState(false);
-  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchOrders() {
-      const result = await fetch(`${urlRoot}/api/admin/orders`);
+      const result = await fetch(`${urlRoot}/api/admin/orders`, {
+        credentials: "include",
+      });
+      console.log(result.status);
+      if (result.status === 401) navigate("/api/admin/login");
       const orders = await result.json();
-      setOrders(orders);
-      setIsloading(false);
+
+      if (result.ok) {
+        setOrders(orders);
+        setIsloading(false);
+      }
     }
 
     fetchOrders();
@@ -33,36 +35,8 @@ const Orders = () => {
 
   console.log(orders);
 
-  const updateOrderStatus = async (value: string, orderId: string) => {
-    try {
-      const response = await fetch(`${urlRoot}/api/admin/orders/${orderId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: value }),
-      });
-
-      if (!response.ok) {
-        throw new Error("An error occured");
-      } else {
-        console.log("Updated");
-        // make that toast display here
-        // notify("Order status updated");
-        toast({
-          description: "Status updated",
-        });
-      }
-    } catch (error) {
-      console.log("error: ", error);
-      toast({
-        description: "An error occured, try again",
-      });
-    }
-  };
   return (
     <div>
-      <Toaster />
       {!isLoading ? (
         <>
           <div className="bg-card text-card-foreground mx-4 my-4 grid grid-cols-4 text-left font-bold border-b">
@@ -75,17 +49,19 @@ const Orders = () => {
           <ul className="flex flex-col">
             {orders?.map((item: OrderInterface) => (
               <li key={item.order_id}>
-                <div className="bg-card text-card-foreground mx-4 h-12 grid grid-cols-4 mb-4 text-left border-b">
-                  <p>{item.order_id}</p>
-                  <p>{format(new Date(item.order_date), "yyyy-MM-dd ")}</p>
-                  <p>{format(new Date(item.order_date), "HH:mm")}</p>
+                <Link to={item.order_id}>
+                  <div className="bg-card text-card-foreground mx-4 h-12 grid grid-cols-4 mb-4 text-left border-b">
+                    <p>{`${item.order_id.substring(0, 8)}...`}</p>
+                    <p>{format(new Date(item.order_date), "yyyy-MM-dd ")}</p>
+                    <p>{format(new Date(item.order_date), "HH:mm")}</p>
 
-                  <OrderStatusSelect
+                    {/* <OrderStatusSelect
                     item={item}
                     updateOrderStatus={updateOrderStatus}
-                  />
-                  {/* <p>{item.order_status}</p> */}
-                </div>
+                  /> */}
+                    <p>{item.order_status}</p>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>

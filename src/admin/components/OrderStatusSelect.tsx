@@ -7,9 +7,9 @@ import {
 } from "@/components/ui/select";
 
 interface OrderInterface {
-  order_id: string;
-  order_status: string;
-  order_date: string;
+  orderId: string;
+  orderStatus: string;
+  date: string;
 }
 
 const OrderStatusSelect = ({
@@ -20,9 +20,9 @@ const OrderStatusSelect = ({
   updateOrderStatus: (value: string, orderId: string) => void;
 }) => {
   return (
-    <Select onValueChange={(value) => updateOrderStatus(value, item.order_id)}>
+    <Select onValueChange={(value) => updateOrderStatus(value, item.orderId)}>
       <SelectTrigger className="w-40">
-        <SelectValue placeholder={item.order_status} />
+        <SelectValue placeholder={item.orderStatus} />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="Pending">Pending</SelectItem>

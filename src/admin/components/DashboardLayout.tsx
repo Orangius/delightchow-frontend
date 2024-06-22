@@ -1,8 +1,9 @@
 import { Link, Outlet } from "react-router-dom";
-
+import { Toaster } from "@/components/ui/toaster";
 const DashboardLayout = () => {
   return (
     <div className="flex gap-8 h-screen">
+      <Toaster />
       <nav>
         <ul className="bg-card text-card-foreground min-w-40 flex-1 flex flex-col items-center py-4 gap-5 font-bold text-lg h-screen border border-border rounded text-left">
           <li>

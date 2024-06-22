@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +11,7 @@
     --card-foreground: hsl(24.6 5% 10%);
     --popover: hsl(24.6 42% 95%);
     --popover-foreground: hsl(24.6 95% 0%);
-    --primary: hsl(24.6 95% 53.1%);
+    --primary: hsl(25, 95%, 53%);
     --primary-foreground: hsl(0 0% 100%);
     --secondary: hsl(24.6 30% 70%);
     --secondary-foreground: hsl(0 0% 0%);
@@ -56,5 +57,9 @@
   body {
     @apply bg-background text-foreground;
     margin: 8px;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
   }
 }
