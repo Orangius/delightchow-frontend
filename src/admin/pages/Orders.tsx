@@ -17,11 +17,11 @@ const Orders = () => {
 
   useEffect(() => {
     async function fetchOrders() {
-      const result = await fetch(`${urlRoot}/api/admin/orders`, {
+      const result = await fetch(`${urlRoot}/api/orders`, {
         credentials: "include",
       });
       console.log(result.status);
-      if (result.status === 401) navigate("/api/admin/login");
+      if (result.status === 401) navigate("/login");
       const orders = await result.json();
 
       if (result.ok) {

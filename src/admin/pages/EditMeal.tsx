@@ -63,7 +63,7 @@ export function EditMeal() {
 
   useEffect(() => {
     async function fetchMeal() {
-      const response = await fetch(`${urlRoot}/api/admin/products/${urlParam}`);
+      const response = await fetch(`${urlRoot}/api/products/${urlParam}`);
       const meal = await response.json();
       setMeal(meal);
       console.log(meal);
@@ -84,16 +84,14 @@ export function EditMeal() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch(
-        `${urlRoot}/api/admin/products/${urlParam}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
+      const response = await fetch(`${urlRoot}/api/products/${urlParam}`, {
+        credentials: "include",
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
       if (!response.ok) {
         throw new Error("An error occured");
       } else {

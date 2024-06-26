@@ -90,13 +90,14 @@ export function AddMeal() {
     // return;
     try {
       setIsloading(true);
-      const response = await fetch(`${urlRoot}/api/admin/products`, {
+      const response = await fetch(`${urlRoot}/api/products`, {
         credentials: "include",
         method: "POST",
         body: formdata, //JSON.stringify(values),
       });
       setIsloading(false);
       if (!response.ok) {
+        console.log(await response.json());
         throw new Error("An error occured");
       } else {
         toast({

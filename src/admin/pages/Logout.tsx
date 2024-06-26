@@ -7,15 +7,15 @@ const Logout = () => {
   const navigate = useNavigate();
   async function handleLogout() {
     try {
-      const response = await fetch(`${urlRoot}/api/admin/logout`, {
+      const response = await fetch(`${urlRoot}/api/logout`, {
         method: "POST",
         credentials: "include",
       });
       if (response.ok) {
         console.log("logout successful");
-        navigate("/api/admin/login");
+        navigate("/admin/login");
       } else if (response.status === 401) {
-        navigate("/api/admin/login");
+        navigate("login");
       }
     } catch (error) {
       console.log(error);
@@ -28,7 +28,7 @@ const Logout = () => {
         <div className="flex gap-4">
           <Button onClick={handleLogout}>Yes</Button>
           <Button>
-            <Link to={"/api/admin"}>No</Link>
+            <Link to={"/admin"}>No</Link>
           </Button>
         </div>
       </div>

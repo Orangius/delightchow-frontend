@@ -17,12 +17,12 @@ const Meals = () => {
   const navigate = useNavigate();
   useEffect(() => {
     async function fetchMeals() {
-      const result = await fetch(`${urlRoot}/api/admin/products`, {
+      const result = await fetch(`${urlRoot}/api/products`, {
         credentials: "include",
       });
       if (result.status === 401) {
         console.log(result);
-        return navigate("/api/admin/login");
+        return navigate("/login");
       }
 
       if (result.ok) {
@@ -39,18 +39,17 @@ const Meals = () => {
   console.log(meals);
   return (
     <div className="mt-10">
+      <div className="bg-card text-card-foreground mx-4 my-4 grid grid-cols-5 text-left font-bold border-b static">
+        <h2></h2>
+        <h2>Name</h2>
+        <h2>Price</h2>
+        <p>Description</p>
+        <Button className="bg-primary w-32 absolute text-xl top-[20px] right-5 cursor-pointer">
+          <Link to={"add-meal"}>+ New</Link>
+        </Button>
+      </div>
       {!isLoading ? (
         <>
-          <div className="bg-card text-card-foreground mx-4 my-4 grid grid-cols-5 text-left font-bold border-b static">
-            <h2></h2>
-            <h2>Name</h2>
-            <h2>Price</h2>
-            <p>Description</p>
-            <Button className="bg-primary w-32 absolute text-xl top-[20px] right-5 cursor-pointer">
-              <Link to={"add-meal"}>+ New</Link>
-            </Button>
-          </div>
-
           <ul>
             {meals.map((item: Meal) => (
               <li key={item.food_id}>

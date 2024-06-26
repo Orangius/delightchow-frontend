@@ -30,7 +30,9 @@ const Order = () => {
   useEffect(() => {
     async function fetchMealdata() {
       try {
-        const response = await fetch(`${urlRoot}/api/admin/orders/${id}`);
+        const response = await fetch(`${urlRoot}/api/orders/${id}`, {
+          credentials: "include",
+        });
         const meal = await response.json();
         setOrderData(meal);
         //setLoading(false);
@@ -42,7 +44,8 @@ const Order = () => {
 
   const updateOrderStatus = async (value: string, orderId: string) => {
     try {
-      const response = await fetch(`${urlRoot}/api/admin/orders/${orderId}`, {
+      const response = await fetch(`${urlRoot}/api/orders/${orderId}`, {
+        credentials: "include",
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

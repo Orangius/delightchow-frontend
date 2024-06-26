@@ -68,7 +68,7 @@ const Login = () => {
     }
 
     if (response.ok) {
-      navigate("/api/admin");
+      navigate("/admin");
     }
   }
 
