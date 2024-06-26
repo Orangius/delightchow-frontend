@@ -34,7 +34,7 @@ const Order = () => {
           credentials: "include",
         });
         const meal = await response.json();
-        if (response.status === 401) navigate("/login");
+        if (response.status === 401) navigate("/admin/login");
         setOrderData(meal);
         //setLoading(false);
         console.log(meal);
