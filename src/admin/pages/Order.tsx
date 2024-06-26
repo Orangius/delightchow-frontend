@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { urlRoot } from "@/lib/constants";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import OrderStatusSelect from "../components/OrderStatusSelect";
 import { Separator } from "@/components/ui/separator";
 
@@ -26,7 +26,7 @@ const Order = () => {
   const { id } = useParams();
   const [orderData, setOrderData] = useState<OrderInterface[]>();
   //const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchMealdata() {
       try {
@@ -34,6 +34,7 @@ const Order = () => {
           credentials: "include",
         });
         const meal = await response.json();
+        if (response.status === 401) navigate("/login");
         setOrderData(meal);
         //setLoading(false);
         console.log(meal);
